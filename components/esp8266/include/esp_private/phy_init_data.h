@@ -25,10 +25,15 @@ static const char phy_init_magic_pre[] = PHY_INIT_MAGIC;
 
 /**
  * @brief Structure containing default recommended PHY initialization parameters.
+ *
+ * NB: The WiFi transmit power values have been modified for my specific hardware.
+ *     This no longer honours the configuration parameter CONFIG_ESP8266_PHY_MAX_WIFI_TX_POWER.
+ *     If this code is to be used on other hardware then additional configuration parameters
+ *     should be added rather than further modifying these magic numbers.
  */
 static const esp_phy_init_data_t phy_init_data= { {
         0x05,
-        0x00,
+        0x08,
         0x04,
         0x02,
         0x05,
@@ -61,20 +66,20 @@ static const esp_phy_init_data_t phy_init_data= { {
         0x00,
         0xf8,
         0xf8,
-        LIMIT(CONFIG_ESP8266_PHY_MAX_WIFI_TX_POWER * 4, 0, 0x52),
-        LIMIT(CONFIG_ESP8266_PHY_MAX_WIFI_TX_POWER * 4, 0, 0x4e),
-        LIMIT(CONFIG_ESP8266_PHY_MAX_WIFI_TX_POWER * 4, 0, 0x4a),
-        LIMIT(CONFIG_ESP8266_PHY_MAX_WIFI_TX_POWER * 4, 0, 0x44),
-        LIMIT(CONFIG_ESP8266_PHY_MAX_WIFI_TX_POWER * 4, 0, 0x40),
-        LIMIT(CONFIG_ESP8266_PHY_MAX_WIFI_TX_POWER * 4, 0, 0x38),
-        0x00,
-        0x00,
-        0x01,
-        0x01,
-        0x02,
-        0x03,
-        0x04,
-        0x05,
+        61,   // power index 0 = 15.25 dBm
+        37,   // power index 1 =  9.25 dBm
+        37,   // power index 2 =  9.25 dBm
+        37,   // power index 3 =  9.25 dBm
+        37,   // power index 4 =  9.25 dBm
+        37,   // power index 5 =  9.25 dBm
+        1,    // 802.11n MCS0 and 802.11g 6 Mb/s, 9 Mb/s use power index 1
+        1,    // 802.11n MCS1 and 802.11g 12 Mb/s        use power index 1
+        1,    // 802.11n MCS2 and 802.11g 18 Mb/s        use power index 1
+        1,    // 802.11n MCS3 and 802.11g 24 Mb/s        use power index 1
+        1,    // 802.11n MCS4 and 802.11g 36 Mb/s        use power index 1
+        1,    // 802.11n MCS5 and 802.11g 48 Mb/s        use power index 1
+        1,    // 802.11n MCS6 and 802.11g 54 Mb/s        use power index 1
+        1,    // 802.11n MCS7                            use power index 1
         ESP8266_XTAL_FLAG,
         0x00,
         0x00,
@@ -123,9 +128,9 @@ static const esp_phy_init_data_t phy_init_data= { {
         0x00,
         0x00,
         0x00,
-        0x00,
-        0x00,
-        0x00,
+        0x01, // enable next two fields:
+        0,    // 802.11b 1 Mb/s and 2 Mb/s   use power index 0
+        0,    // 802.11b 5.5Mb/s and 11 Mb/s use power index 0
         0x00,
         0x00,
         0x00,
@@ -136,7 +141,7 @@ static const esp_phy_init_data_t phy_init_data= { {
         0x00,
 #ifdef CONFIG_ESP_PHY_INIT_DATA_VDD33_CONST
         CONFIG_ESP_PHY_INIT_DATA_VDD33_CONST,
-#else   
+#else
         0x00,
 #endif
         0x00,
